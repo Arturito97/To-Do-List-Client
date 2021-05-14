@@ -35,7 +35,7 @@ function Navbar({loggedInUser, setCurrentUser}) {
     <h3>Welcome {loggedInUser.username}
     &nbsp; &nbsp;
     <NavLink to="/">
-            <button onClick={logoutUser}>Logout</button>
+            <img className="logoutImg" onClick={logoutUser} src="/logout-2432055-2058929.png"/>
         </NavLink>
     </h3>
     <ul>
@@ -66,19 +66,19 @@ function Navbar({loggedInUser, setCurrentUser}) {
         </div>
     <ul>
     
-    <li>
+    <li className="listLoginSignup">
         <NavLink activeStyle={{ color: "red" }} exact to="/signup">
           Signup
         </NavLink>
       </li>
-      <li>
+      <li className="listLoginSignup">
         <NavLink activeStyle={{ color: "red" }} exact to="/login">
           Login
         </NavLink>
       </li>
       <li>
         <NavLink activeStyle={{ color: "red" }} exact to="/login-google">
-          Login with Google
+          <img className="GoogleImg" src="/SingInWithGoogle.png" />
         </NavLink>
       </li>
   </ul>

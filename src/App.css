@@ -7,6 +7,20 @@ a {
   color: black;
 }
 
+.logoutImg {
+  width: 15px;
+  height: 15px;
+}
+
+.GoogleImg {
+  height: 150px;
+  position: relative;
+  bottom: 25px;
+}
+/* .listLoginSignup{
+  
+} */
+
 ul {
   list-style-type: none;
 }

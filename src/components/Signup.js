@@ -29,11 +29,11 @@ class Signup extends React.Component {
         return (
         <>
         <form onSubmit={this.handleFormSubmit}>
-          <p><label>Username:</label>
+          <p><label>Username:</label>&nbsp;
           <input type="text" name="username" value={username} onChange={this.handleChange} /></p>
-          <p><label>Email:</label>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>Email:</label>&nbsp;
           <input type="email" name="email" value={email} onChange={this.handleChange}/></p>
-          <p><label>Password:</label>
+          <p>&nbsp;<label>Password:</label>&nbsp;
           <input type="password" name="password" value={password} onChange={this.handleChange}/></p>
           <button>Signup</button>
         </form>
