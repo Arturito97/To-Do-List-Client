@@ -2,7 +2,7 @@ import axios from 'axios';
 const baseUrl = `${process.env.REACT_APP_TASKS_API}/api`
 
 export const getAllTasks = () => {
-    return axios.get(`${baseUrl}/tasks`);
+    return axios.get(`${baseUrl}/tasks/`);
 };
 
 export const getTask = (id) => {
@@ -19,7 +19,11 @@ export const addTask = (task) => {
 
 export const updateTask = (updatedTask) => {
     return axios.put(`${baseUrl}/tasks/${updatedTask._id}`, updatedTask);
-}
+};
+
+export const uploadFile = (uploadData) => {
+    return axios.post(`${baseUrl}/upload`, uploadData);
+};
 
 
 /* Authentication Routes */

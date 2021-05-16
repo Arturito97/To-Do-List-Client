@@ -13,8 +13,9 @@ import { loggedin } from "./api";
 
 class App extends React.Component {
   state = {
-    loggedInUser: null
-  }
+    loggedInUser: null,
+
+  };
 
   async componentDidMount() {
     if(this.state.loggedInUser === null) {

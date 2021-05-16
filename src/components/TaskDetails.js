@@ -29,6 +29,8 @@ class TaskDetails extends React.Component {
             <>
                 <h2> {title} </h2>
                 <button onClick={() => this.handleDeleteTask(_id)}>Delete</button>
+                <br />
+                <br />
                 <ListTasks />
             </>
         )

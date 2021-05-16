@@ -1,6 +1,5 @@
 import React from 'react';
 import { addTask } from '../api';
-import ListTasks from './ListTasks';
 import '../App.css';
 
 class AddTask extends React.Component {
@@ -37,8 +36,9 @@ class AddTask extends React.Component {
 
                 <button type='submit'>Create</button>
             </form>
+            <br/>
 
-            <ListTasks />
+            
             </>
         )
     }

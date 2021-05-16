@@ -30,13 +30,15 @@ class EditTask extends React.Component {
     const { title } = this.state;
     return (
       <form onSubmit={this.handleFormSubmit}>
-        <label>Title</label>
+        <label>Task:</label>
+        &nbsp;
         <input
           type="text"
           name="title"
           value={title}
           onChange={this.handleChange}
         />
+        &nbsp;
         <button type="submit">Update</button>
       </form>
     );

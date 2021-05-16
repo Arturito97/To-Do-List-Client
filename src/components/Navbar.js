@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { logout } from '../api';
+import { logout, uploadFile } from '../api';
 import ReactWeather, { useOpenWeather } from 'react-open-weather';
 import '../App.css';
 
@@ -9,6 +9,8 @@ function Navbar({loggedInUser, setCurrentUser}) {
         await logout();
         setCurrentUser(null);
     }
+
+    
 
     const { data, isLoading, errorMessage } = useOpenWeather({
       key: '199bd7357f26d17b0ad408717dede67f',
@@ -31,25 +33,15 @@ function Navbar({loggedInUser, setCurrentUser}) {
       showForecast
     />
     </div>
-
-    <h3>Welcome {loggedInUser.username}
-    &nbsp; &nbsp;
-    <NavLink to="/">
-            <img className="logoutImg" onClick={logoutUser} src="/logout-2432055-2058929.png"/>
-        </NavLink>
-    </h3>
-    <ul>
-      <li>
-        <NavLink activeStyle={{ color: "red" }} exact to="/tasks">
-          Tasks
-        </NavLink>
-      </li>
-      <li>
-        <NavLink activeStyle={{ color: "red" }} exact to="/tasks/add">
-          Add a Task
-        </NavLink>
-      </li>
-    </ul>
+    <br />
+      <marquee behavior="scroll" direction="left" ><h3 onClick={logoutUser} className="Welcome">Welcome {loggedInUser.username}! &nbsp;
+      <NavLink to="/">
+        <img className="logoutImg" onClick={logoutUser} src="/logout-2432055-2058929.png"/>
+      </NavLink></h3>
+      </marquee>
+      
+        <br />
+        <br />
     
     </>
   ) : (
@@ -63,22 +55,22 @@ function Navbar({loggedInUser, setCurrentUser}) {
           unitsLabels={{ temperature: 'C', windSpeed: 'Km/h' }}
           showForecast
         />
+        <br />
         </div>
     <ul>
-    
-    <li className="listLoginSignup">
-        <NavLink activeStyle={{ color: "red" }} exact to="/signup">
-          Signup
-        </NavLink>
-      </li>
+    <br />
+    <br />
+    <br />
+    <br />
       <li className="listLoginSignup">
         <NavLink activeStyle={{ color: "red" }} exact to="/login">
-          Login
+          <img className="LoginImg" src="/Member-Login-Button-PNG-Image.png" />
         </NavLink>
       </li>
+      <br/>
       <li>
         <NavLink activeStyle={{ color: "red" }} exact to="/login-google">
-          <img className="GoogleImg" src="/SingInWithGoogle.png" />
+          <img className="GoogleImg" src="/create-apple-google-signin-buttons-quick-dirty-way-google.png" />
         </NavLink>
       </li>
   </ul>
