@@ -60,8 +60,6 @@ function Navbar({loggedInUser, setCurrentUser}) {
     <ul>
     <br />
     <br />
-    <br />
-    <br />
       <li className="listLoginSignup">
         <NavLink activeStyle={{ color: "red" }} exact to="/login">
           <img className="LoginImg" src="/Member-Login-Button-PNG-Image.png" />

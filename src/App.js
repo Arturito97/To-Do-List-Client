@@ -9,6 +9,9 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import React from 'react';
 import { loggedin } from "./api";
+import PrivateRoute from './components/PrivateRoute';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 
 class App extends React.Component {
@@ -36,12 +39,12 @@ class App extends React.Component {
     const { loggedInUser } = this.state;
   return (
     <div className="App">
+      <ToastContainer />
       <Navbar loggedInUser={loggedInUser} setCurrentUser={this.setCurrentUser}/>
       <Switch>
-        <Route exact path='/tasks' component={ListTasks} />
+        <PrivateRoute exact path="/tasks" component={ListTasks} />
         <Route exact path='/tasks/add' component={AddTask} />
         <Route exact path='/tasks/:id' component={TaskDetails} />
-        <Route exact path='/tasks/:id/edit' component={EditTask} />
         <Route exact 
         path='/signup'
          render={(props)=>{

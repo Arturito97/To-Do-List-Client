@@ -1,21 +1,8 @@
-import React from 'react';
-import { getAllTasks, deleteTask, addTask, getTask } from '../api';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { getAllTasks, deleteTask, addTask } from '../api';
 import '../App.css';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-function allowDrop(ev) {
-  ev.preventDefault();
-}
-
-function drag(ev) {
-  ev.dataTransfer.setData("text", ev.target.id);
-}
-
-function drop(ev) {
-  ev.preventDefault();
-  var data = ev.dataTransfer.getData("text");
-  ev.target.appendChild(document.getElementById(data));
-}
 
 class ListTasks extends React.Component {
     state = {
@@ -34,6 +21,7 @@ class ListTasks extends React.Component {
     };
 
     handleFormSubmit = async (event) => {
+      event.preventDefault()
       const { title } = this.state;
 
       //2. create the project on our api
@@ -41,8 +29,18 @@ class ListTasks extends React.Component {
           title
       }
       await addTask(newTask);
-      this.props.history.push('/tasks');
+
+      this.setState({
+        searchKeyword: '',
+        tasks: this.state.tasks.concat(newTask),
+      }, () => {
+        this.setState({
+          filteredTasks: this.state.tasks
+        })
+      })
     }
+
+    
 
     async componentDidMount() {
         if(this.state.loggedInUser === null) {
@@ -63,12 +61,16 @@ class ListTasks extends React.Component {
         const response = await getAllTasks();
         this.setState({
             tasks: response.data,
+            filteredTasks: response.data
         });
     }
 
     handleDeleteTask = async (id) => {
       await deleteTask(id);
-      this.props.history.push('/tasks');
+      this.setState({
+        tasks: this.state.tasks.filter((task) => task._id !== id),
+        filteredTasks: this.state.filteredTasks.filter((task) => task._id !== id)
+      })
     }
 
     handleSearch = (event) => {
@@ -84,9 +86,20 @@ class ListTasks extends React.Component {
 
     render() {
         const { title, _id } = this.state;
+        const [tasks, updateTasks] = useState(id)
+        function handleOnDragonEnd(result) {
+         if(!result.destination) return;
+          const items = Array.from(tasks);
+          const [reorderedItem] = items.splice(result.source.index, 1);
+          items.splice(result.destination.index, 0, reorderedItem);
+
+          updateTasks(items);
+        }
+
         return (
-            <div ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h4 className="searchBar">Search for a task: <input onChange={this.handleSearch} /></h4>
+            
+            <div>
+            <h4 className="searchBar">Search for a task: <input onChange={this.handleSearch} value={this.state.searchKeyword} /></h4>
             <br />
             <form onSubmit={this.handleFormSubmit} encType='multipart/form-data'>
                 <h5><label>Add a Task:</label>
@@ -96,18 +109,28 @@ class ListTasks extends React.Component {
                 <button type='submit'>New task</button></h5>
             </form>
             <br />
-            <ul>
-                {this.state.tasks.map((task) => {
-                    return <li key={task._id}>
-                        <p draggable='true' ondragstart="drag(event)"><NavLink exact to={`/tasks/${task._id}`}>{task.title}</NavLink>
+            <DragDropContext onDragEnd={handleOnDragonEnd}>
+              <Droppable droppableId="tasks">
+                {(provided) => (
+            <ul className="tasks" {...provided.droppableProps} ref={provided.innerRef}>
+                {this.state.filteredTasks.map((task, index) => {
+                    return <Draggable key={task._id} draggableId={task._id} index={index}>
+                      {(provided) =>(
+                      <li {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                        {task.title}
                         &nbsp;
-                        <NavLink exact to={`/tasks/${task._id}/edit`}>Edit</NavLink>
-                        <button onClick={() => this.handleDeleteTask(_id)}>Delete</button>
+                        <button onClick={() => this.handleDeleteTask(task._id)}>Delete</button>
                         &nbsp;
-                        </p>
+                        
                     </li>
+                    )}
+                    </Draggable>
                 })}
+                {provided.placeholder}
             </ul>
+              )}
+            </Droppable>
+            </DragDropContext>
             </div>
         )
     }
