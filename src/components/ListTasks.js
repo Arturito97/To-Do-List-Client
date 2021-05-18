@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
-import { getAllTasks, deleteTask, addTask } from '../api';
+import React from 'react';
+import { getAllTasks, deleteTask, addTask, updateTask } from '../api';
 import '../App.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
 
 class ListTasks extends React.Component {
     state = {
         title: '',
-        tasks: [],
         loggedInUser: null,
         filteredTasks: [],
-        searchKeyword: ''
+        searchKeyword: '',
+        items: '',
     }
 
     handleChange = (event) => {
@@ -39,31 +46,32 @@ class ListTasks extends React.Component {
         })
       })
     }
-
     
 
     async componentDidMount() {
-        if(this.state.loggedInUser === null) {
-          const response = await loggedin();
-          if(response.data._id){
-            this.setCurrentUser(response.data);
-          }
-        }
+      
+        // if(this.state.loggedInUser === null) {
+        //   const response = await loggedin();
+        //   if(response.data._id){
+        //     this.setCurrentUser(response.data);
+        //   }
+        // }
+        
+      const response = await getAllTasks();
+      this.setState({
+          tasks: response.data,
+          filteredTasks: response.data
+      });
       }
     
       setCurrentUser = (user) => {
+        
         this.setState({
           loggedInUser: user
         });
       }
 
-    async componentDidMount() {
-        const response = await getAllTasks();
-        this.setState({
-            tasks: response.data,
-            filteredTasks: response.data
-        });
-    }
+    
 
     handleDeleteTask = async (id) => {
       await deleteTask(id);
@@ -80,58 +88,83 @@ class ListTasks extends React.Component {
         return task.title
           .toLowerCase()
           .startsWith(event.target.value.toLowerCase());
-      }),
-    });
-  };
+        }),
+      });
+    };
+
+    handleOnDragEnd = async (result) => {
+      if(!result.destination) {
+        return;
+      }
+      const items = reorder(
+        this.state.filteredTasks,
+        result.source.index,
+        result.destination.index
+      );
+  
+      this.setState({
+        filteredTasks: items
+       }, async () => {
+         let updateTasksPromises = [];
+         this.state.filteredTasks.forEach((task, index) => {
+           task.order = index
+            updateTasksPromises.push(updateTask(task))
+         })
+         const result = await Promise.all(updateTasksPromises);
+         console.log(result);
+
+         })
+    }
+
 
     render() {
         const { title, _id } = this.state;
-        const [tasks, updateTasks] = useState(id)
-        function handleOnDragonEnd(result) {
-         if(!result.destination) return;
-          const items = Array.from(tasks);
-          const [reorderedItem] = items.splice(result.source.index, 1);
-          items.splice(result.destination.index, 0, reorderedItem);
+        // function handleOnDragonEnd(result) {
+        //   console.log(result);
+        //   if (!result.destination) return;
+        //   const items = Array.from(filteredTasks);
+        //   const [reorderedItem] = items.splice(result.source.index, 1);
+        //   items.splice(result.destination.index, 0, reorderedItem);
 
-          updateTasks(items);
-        }
+        //   updateTask(items);
+        // }
 
         return (
             
-            <div>
+          <div>
             <h4 className="searchBar">Search for a task: <input onChange={this.handleSearch} value={this.state.searchKeyword} /></h4>
             <br />
             <form onSubmit={this.handleFormSubmit} encType='multipart/form-data'>
                 <h5><label>Add a Task:</label>
-                &nbsp;
+                  &nbsp;
                 <input type="text" name="title" onChange={this.handleChange} value={title} />
-                &nbsp;
+                  &nbsp;
                 <button type='submit'>New task</button></h5>
             </form>
             <br />
-            <DragDropContext onDragEnd={handleOnDragonEnd}>
-              <Droppable droppableId="tasks">
+            <DragDropContext onDragEnd={this.handleOnDragEnd}>
+              <Droppable droppableId="tasks" >
                 {(provided) => (
-            <ul className="tasks" {...provided.droppableProps} ref={provided.innerRef}>
-                {this.state.filteredTasks.map((task, index) => {
-                    return <Draggable key={task._id} draggableId={task._id} index={index}>
+                <ul className="tasks" {...provided.droppableProps} ref={provided.innerRef}>
+                  {this.state.filteredTasks.map((task, index) => {
+                    return <Draggable key={index} draggableId={index.toString()} index={index}>
                       {(provided) =>(
-                      <li {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                      <li key={index} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                         {task.title}
-                        &nbsp;
+                          &nbsp;
                         <button onClick={() => this.handleDeleteTask(task._id)}>Delete</button>
-                        &nbsp;
-                        
+                          &nbsp;
                     </li>
                     )}
                     </Draggable>
-                })}
+                  })}
                 {provided.placeholder}
-            </ul>
+              </ul>
               )}
-            </Droppable>
+              
+              </Droppable>
             </DragDropContext>
-            </div>
+          </div>
         )
     }
 }
