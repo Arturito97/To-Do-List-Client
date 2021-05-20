@@ -8,6 +8,7 @@ function Navbar({loggedInUser, setCurrentUser}) {
     const logoutUser = async () => {
         await logout();
         setCurrentUser(null);
+
     }
 
     
@@ -34,8 +35,8 @@ function Navbar({loggedInUser, setCurrentUser}) {
     />
     </div>
     <br />
-      <marquee behavior="scroll" direction="left" ><h3 onClick={logoutUser} className="Welcome">Welcome {loggedInUser.username}! &nbsp;
-      <NavLink to="/tasks">
+      <marquee behavior="scroll" direction="left" ><h3 className="Welcome">Welcome {loggedInUser.username}! &nbsp;
+      <NavLink exact to="/">
         <img className="logoutImg" onClick={logoutUser} src="/logout-2432055-2058929.png"/>
       </NavLink></h3>
       </marquee>
@@ -46,17 +47,6 @@ function Navbar({loggedInUser, setCurrentUser}) {
     </>
   ) : (
     <>
-        <div className="ReactWeather"><ReactWeather
-          isLoading={isLoading}
-          errorMessage={errorMessage}
-          data={data}
-          lang="en"
-          locationLabel="Lisbon"
-          unitsLabels={{ temperature: 'C', windSpeed: 'Km/h' }}
-          showForecast
-        />
-        <br />
-        </div>
     <ul>
     <br />
     <br />

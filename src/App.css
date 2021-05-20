@@ -43,7 +43,7 @@ ul {
   margin: 8px;
   border: 1px solid lightgrey;
   border-radius: 25px;
-  width: 200px;
+  width: 450px;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -55,40 +55,12 @@ ul {
 .button {
   border-radius: 25px;
   background-color: white;
-  color: #df2800;
+  color: #67cd00;
 }
 
 .list {
   display: flex;
-  justify-content:space-between;
-}
-
-.task.is-dragging {
-  background: #515b7d;
-  border-color: MediumSeaGreen;
-  box-shadow: 0px 0px 2px rgb(8, 58, 30), 0px 0px 10px MediumSeaGreen;
-}
-
-.done {
-  background-color: #66CD00;
-  position: relative;
-  left: 35%;
-  text-align: center;
-  margin: 8px;
-  border: 1px solid lightgrey;
-  border-radius: 25px;
-  width: 200px;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  color: white;
-}
-
-.button2 {
-  border-radius: 25px;
-  background-color: white;
-  color: #66CD00;
+  justify-content: space-between;
 }
 /* 
 .ReactWeather {

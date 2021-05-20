@@ -12,6 +12,7 @@ import { loggedin } from "./api";
 import PrivateRoute from './components/PrivateRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
+import Home from './components/Home';
 
 
 class App extends React.Component {
@@ -42,6 +43,7 @@ class App extends React.Component {
       <ToastContainer autoClose={1250}/>
       <Navbar loggedInUser={loggedInUser} setCurrentUser={this.setCurrentUser}/>
       <Switch>
+        <Route exact path='/' component={Home} />
         <PrivateRoute exact path="/tasks" component={ListTasks} />
         <Route exact path='/tasks/add' component={AddTask} />
         <Route exact path='/tasks/:id' component={TaskDetails} />

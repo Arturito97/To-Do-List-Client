@@ -86,7 +86,7 @@ class ListTasks extends React.Component {
         tasks: this.state.tasks.filter((task) => task._id !== id),
         filteredTasks: this.state.filteredTasks.filter((task) => task._id !== id),
       })
-      toast.success('Deleted!', {
+      toast.success('Task completed!', {
         hideProgressBar: true
       })
     }
@@ -128,7 +128,13 @@ class ListTasks extends React.Component {
          const result = await Promise.all(updateTasksPromises);
          console.log(result);
 
+         const response = await getAllTasks();
+         this.setState({
+             tasks: response.data,
+             filteredTasks: response.data
+         });
          })
+
 
     }
 
@@ -155,6 +161,7 @@ class ListTasks extends React.Component {
               
               <div className="toDo">
               <h3>To Do:</h3>
+              <br />
               <Droppable droppableId="toDoTasks" > 
                 {(provided) => (
                 <ul className="toDoTasks" {...provided.droppableProps} ref={provided.innerRef}>
@@ -164,10 +171,9 @@ class ListTasks extends React.Component {
                       {(provided) =>(
                         
                       <li className='list' key={index} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                      
-                        {task.title}
-                          &nbsp;&nbsp;&nbsp;
-                        <button className="button" onClick={() => this.handleDeleteTask(task._id)}>Delete</button>
+                        {index + 1}. &nbsp;&nbsp;&nbsp; {task.title}
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button className="button" onClick={() => this.handleDeleteTask(task._id)}>Done</button>
                         
                     </li>
                     
