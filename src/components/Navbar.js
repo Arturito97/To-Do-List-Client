@@ -35,7 +35,7 @@ function Navbar({loggedInUser, setCurrentUser}) {
     </div>
     <br />
       <marquee behavior="scroll" direction="left" ><h3 onClick={logoutUser} className="Welcome">Welcome {loggedInUser.username}! &nbsp;
-      <NavLink to="/">
+      <NavLink to="/tasks">
         <img className="logoutImg" onClick={logoutUser} src="/logout-2432055-2058929.png"/>
       </NavLink></h3>
       </marquee>
