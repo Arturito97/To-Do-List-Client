@@ -2,7 +2,9 @@ import React from 'react';
 import { getAllTasks, deleteTask, addTask, updateTask } from '../api';
 import '../App.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { toast } from 'react-toastify';
 
+// Reorder the list items
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -17,7 +19,7 @@ class ListTasks extends React.Component {
         loggedInUser: null,
         filteredTasks: [],
         searchKeyword: '',
-        items: '',
+        completedTasks: [],
     }
 
     handleChange = (event) => {
@@ -33,9 +35,11 @@ class ListTasks extends React.Component {
 
       //2. create the project on our api
       const newTask = {
-          title
+          title,
+          order: this.state.tasks.length
       }
-      await addTask(newTask);
+      const response = await addTask(newTask)
+      newTask._id = response.data._id
 
       this.setState({
         searchKeyword: '',
@@ -46,16 +50,20 @@ class ListTasks extends React.Component {
         })
       })
     }
+
+    async componentDidMount(){
+      if(this.state.loggedInUser === null) {
+        const response = await loggedin();
+        if(response.data._id){
+          this.setCurrentUser(response.data);
+        }
+      }  
+    }
     
 
     async componentDidMount() {
       
-        // if(this.state.loggedInUser === null) {
-        //   const response = await loggedin();
-        //   if(response.data._id){
-        //     this.setCurrentUser(response.data);
-        //   }
-        // }
+        
         
       const response = await getAllTasks();
       this.setState({
@@ -71,15 +79,18 @@ class ListTasks extends React.Component {
         });
       }
 
-    
 
     handleDeleteTask = async (id) => {
       await deleteTask(id);
       this.setState({
         tasks: this.state.tasks.filter((task) => task._id !== id),
-        filteredTasks: this.state.filteredTasks.filter((task) => task._id !== id)
+        filteredTasks: this.state.filteredTasks.filter((task) => task._id !== id),
+      })
+      toast.success('Deleted!', {
+        hideProgressBar: true
       })
     }
+
 
     handleSearch = (event) => {
     this.setState({
@@ -92,16 +103,20 @@ class ListTasks extends React.Component {
       });
     };
 
+    
+
     handleOnDragEnd = async (result) => {
+      console.log(result);
       if(!result.destination) {
         return;
       }
+
       const items = reorder(
         this.state.filteredTasks,
         result.source.index,
         result.destination.index
       );
-  
+
       this.setState({
         filteredTasks: items
        }, async () => {
@@ -114,20 +129,12 @@ class ListTasks extends React.Component {
          console.log(result);
 
          })
+
     }
 
 
     render() {
         const { title, _id } = this.state;
-        // function handleOnDragonEnd(result) {
-        //   console.log(result);
-        //   if (!result.destination) return;
-        //   const items = Array.from(filteredTasks);
-        //   const [reorderedItem] = items.splice(result.source.index, 1);
-        //   items.splice(result.destination.index, 0, reorderedItem);
-
-        //   updateTask(items);
-        // }
 
         return (
             
@@ -142,28 +149,41 @@ class ListTasks extends React.Component {
                 <button type='submit'>New task</button></h5>
             </form>
             <br />
+            
+            <div className="row">
             <DragDropContext onDragEnd={this.handleOnDragEnd}>
-              <Droppable droppableId="tasks" >
+              
+              <div className="toDo">
+              <h3>To Do:</h3>
+              <Droppable droppableId="toDoTasks" > 
                 {(provided) => (
-                <ul className="tasks" {...provided.droppableProps} ref={provided.innerRef}>
+                <ul className="toDoTasks" {...provided.droppableProps} ref={provided.innerRef}>
                   {this.state.filteredTasks.map((task, index) => {
+                    
                     return <Draggable key={index} draggableId={index.toString()} index={index}>
                       {(provided) =>(
-                      <li key={index} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                        
+                      <li className='list' key={index} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                      
                         {task.title}
-                          &nbsp;
-                        <button onClick={() => this.handleDeleteTask(task._id)}>Delete</button>
-                          &nbsp;
+                          &nbsp;&nbsp;&nbsp;
+                        <button className="button" onClick={() => this.handleDeleteTask(task._id)}>Delete</button>
+                        
                     </li>
+                    
                     )}
+                    
                     </Draggable>
                   })}
                 {provided.placeholder}
-              </ul>
+                </ul>
               )}
               
               </Droppable>
+              </div>              
             </DragDropContext>
+            
+            </div>
           </div>
         )
     }

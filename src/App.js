@@ -39,7 +39,7 @@ class App extends React.Component {
     const { loggedInUser } = this.state;
   return (
     <div className="App">
-      <ToastContainer />
+      <ToastContainer autoClose={1250}/>
       <Navbar loggedInUser={loggedInUser} setCurrentUser={this.setCurrentUser}/>
       <Switch>
         <PrivateRoute exact path="/tasks" component={ListTasks} />
